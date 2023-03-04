@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1671.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Bible Verse Lookup&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;Bible Verse Lookup&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;form&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="verse"&gt;Enter a Bible Verse Reference:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="verse" name="verse"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button type="button" onclick="lookup()"&gt;Lookup&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/form&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;hr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Results:&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="results"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>function lookup() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Get the user's input</p>
+<p class="p1"><span class="Apple-converted-space">        </span>var verseRef = document.getElementById("verse").value;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Create an array of Bible versions to look up</p>
+<p class="p1"><span class="Apple-converted-space">        </span>var versions = ["NIV", "ESV", "KJV", "NASB"];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Loop through the versions and create a URL for each one</p>
+<p class="p1"><span class="Apple-converted-space">        </span>for (var i = 0; i &lt; versions.length; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>var url = "https://api.esv.org/v3/passage/text/?q=" + verseRef + "&amp;include-headings=false&amp;include-footnotes=false&amp;include-verse-numbers=false&amp;include-passage-references=false&amp;include-audio-link=false&amp;include-single-verse-per-line=false&amp;indent-paragraphs=false&amp;indent-poetry=false&amp;indent-quotes=false&amp;indent-declares=false&amp;indent-psalm-doxology=false&amp;line-length=0&amp;wrap-quotes=false&amp;wrap-letters=false&amp;indent-top-level-quotes=false&amp;indent-top-level-parentheses=false&amp;indent-top-level-paragraphs=false&amp;indent-empty-lines=false&amp;output-format=plain-text&amp;include-passage-horizontal-lines=false&amp;include-heading-horizontal-lines=false&amp;include-footnote-horizontal-lines=false&amp;horizontal-line-length=0&amp;vertical-space-between-paragraphs=0&amp;vertical-space-between-poetry-stanzas=0&amp;vertical-space-between-list-items=0&amp;indent-poetry-stanzas=0&amp;indent-poetry-line-breaks=0&amp;indent-list-items=0&amp;indent-embedded-content=0&amp;indent-footnotes=0&amp;indent-cross-references=0&amp;indent-other-paragraphs=0&amp;indent-block-quotes=0&amp;indent-psalm-doxology-lines=0&amp;indent-letters=0&amp;indent-top-level-headings=0&amp;indent-second-level-headings=0&amp;indent-tables=0&amp;indent-pre-formatted-text=0&amp;indent-hyperlinks=0&amp;indent-images=0&amp;indent-forms=0&amp;indent-horizontal-lines=0&amp;indent-annotations=0&amp;include-first-verse-numbers=false&amp;include-heading-ids=false&amp;include-footnote-ids=false&amp;include-passage-references-with-translations=false&amp;include-passage-references-with-reverse-translation=false&amp;include-passage-references-with-translation-ids=false&amp;include-heading-tags=false&amp;include-footnote-tags=false&amp;include-passage-reference-links=false&amp;include-verse-permalinks=false&amp;include-heading-permalinks=false&amp;include-footnote-permalinks=false&amp;include-passage-reference-ids=false&amp;include-verse-ids=false&amp;include-heading-ids=false&amp;include-footnote-ids=false&amp;include-content-timestamps=false&amp;include-title-info=false&amp;include-passage-references-with-ids=false&amp;include-verse-numbers-in-paragraph=false&amp;include-verse-numbers-in-poetry-stanza=false&amp;include-verse-numbers-in-list-item=false&amp;include-highlight-verse-number=false&amp;include-reference-text=false&amp;</p>
+</body>
+</html>
