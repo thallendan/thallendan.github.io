@@ -1,7 +1,38 @@
 <!DOCTYPE html>
 <html>
-<body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
-</body>
+  <head>
+    <title>Bible Verse Lookup</title>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <h1>Bible Verse Lookup</h1>
+    <form>
+      <label for="verse-reference">Enter a Bible Verse Reference:</label><br>
+      <input type="text" id="verse-reference" name="verse-reference"><br>
+      <button type="button" onclick="lookup()">Lookup Verse</button>
+    </form>
+    <br>
+    <div id="verse-container"></div>
+
+    <script>
+      function lookup() {
+        const verseReference = document.getElementById("verse-reference").value;
+        axios.get(`https://api.bible/v1/bibles/c53baaca653ebadec3e8b76e4c636e12/search?query=${verseReference}&sort=canonical`)
+          .then(response => {
+            const verseData = response.data;
+            let verseHTML = "";
+            verseData.forEach(verse => {
+              verseHTML += `<h2>${verse.reference}</h2>`;
+              verseHTML += `<p>${verse.content}</p>`;
+            });
+            document.getElementById("verse-container").innerHTML = verseHTML;
+          })
+          .catch(error => {
+            console.log(error);
+            document.getElementById("verse-container").innerHTML = "<p>An error occurred while looking up the verse.</p>";
+          });
+      }
+    </script>
+  </body>
 </html>
