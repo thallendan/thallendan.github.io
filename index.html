@@ -5,9 +5,15 @@
   <title>Current Time and Temperature</title>
   <script>
     // Function to get current time
-    function getTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
+    function getTime(timeZone) {
+      onst options = { 
+        timeZone: timeZone, 
+          hour12: false, 
+          hour: 'numeric', 
+          minute: 'numeric', 
+          second: 'numeric' 
+        };
+        const timeString = new Date().toLocaleTimeString('en-US', options);
       return timeString;
     }
 
@@ -31,8 +37,8 @@
     async function displayTimeAndTemp() {
       const bangkokTemp = await getBangkokTemp();
       const hollandTemp = await getHollandTemp();
-      const bangkokTime = getTime();
-      const hollandTime = getTime();
+      const bangkokTime = getTime('Asia/Bangkok');
+      const hollandTime = getTime('America/Detroit');
 
       document.getElementById("bangkok-time").textContent = "Bangkok Time: " + bangkokTime;
       document.getElementById("holland-time").textContent = "Holland Time: " + hollandTime;
