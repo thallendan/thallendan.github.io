@@ -2,66 +2,95 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Six Windows with Different JavaScripts</title>
-  <script>
+  <title>Six Pages in One</title>
+  <style>
+    /* Styles for the container div that will hold the pages */
+    #container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      height: 100vh;
+    }
 
-  // Function to get current time
-  function getTime(timeZone) {
-    const options = { 
-      timeZone: timeZone, 
-        hour12: true, 
-        hour: 'numeric', 
-        minute: 'numeric', 
-        second: 'numeric' 
-      };
-      const timeString = new Date().toLocaleTimeString('en-US', options);
-    return timeString;
-  }
-
-  // Function to get current temperature for Bangkok
-  async function getBangkokTemp() {
-    const response = await fetch("https://api.openweathermap.org/data/2.5/weather?q=Bangkok,th&appid=b29b5c17022a575dd5fac619d51a160f&units=metric");
-    const data = await response.json();
-    const temp = data.main.temp;
-    return temp;
-  }
-
-  // Function to get current temperature for Holland
-  async function getHollandTemp() {
-    const response = await fetch("https://api.openweathermap.org/data/2.5/weather?q=Holland,michigan&appid=b29b5c17022a575dd5fac619d51a160f&units=metric");
-    const data = await response.json();
-    const temp = data.main.temp;
-    return temp;
-  }
-
-  // Function to display time and temperature
-  async function displayTimeAndTemp() {
-    const bangkokTemp = await getBangkokTemp();
-    const hollandTemp = await getHollandTemp();
-    const bangkokTime = getTime('Asia/Bangkok');
-    const hollandTime = getTime('America/Detroit');
-
-    document.getElementById("bangkok-time").textContent = "Bangkok Time: " + bangkokTime;
-    document.getElementById("holland-time").textContent = "Holland Time: " + hollandTime;
-    document.getElementById("bangkok-temp").textContent = "Bangkok Temperature: " + bangkokTemp + "°C";
-    document.getElementById("holland-temp").textContent = "Holland Temperature: " + hollandTemp + "°C";
-  }
-</script>
+    /* Styles for each page's container div */
+    .page-container {
+      width: 30%;
+      height: 80vh;
+      margin: 10px;
+      border: 1px solid black;
+      overflow-y: scroll;
+    }
+  </style>
 </head>
-<body onload="displayTimeAndTemp()">
-  <h1>Six Windows with Different JavaScripts</h1>
+<body>
+  <h1>Six Pages in One</h1>
 
-  <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
-    <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
-      <h2>Window 1</h2>
-      <div id="window1"></div>
-      <script>
-        
-      </script>
+  <div id="container">
+    <!-- First page -->
+    <div class="page-container">
+      <head>
+        <title>Page 1</title>
+      </head>
+      <body>
+        <h2>Page 1</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non quam non lectus tincidunt fermentum. Integer sit amet neque euismod, pharetra orci ut, tristique magna. In hac habitasse platea dictumst. Morbi vitae orci a enim ultrices auctor.</p>
+        <p>Donec fringilla purus a mauris pretium, eget tincidunt nunc sollicitudin. Proin ut velit vitae lectus consectetur sollicitudin. Vestibulum eget purus id lacus eleifend tempor. Sed euismod hendrerit quam, eu fermentum ipsum feugiat nec.</p>
+        <p>Phasellus a risus aliquet, vehicula nisl at, fermentum dolor. Vestibulum eu hendrerit odio, sed dignissim lorem. Duis tincidunt libero eu velit vulputate vestibulum. Nam accumsan sapien quis urna maximus, nec ullamcorper nibh pulvinar.</p>
+        <!-- Add more content here as needed -->
+      </body>
     </div>
 
-    <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
-      <body>
+    <!-- Second page -->
+    <div class="page-container">
+      <head>
+ 
+        <meta charset="UTF-8">
+        <title>Current Time and Temperature</title>
+        <script>
+          // Function to get current time
+          function getTime(timeZone) {
+            const options = { 
+              timeZone: timeZone, 
+                hour12: true, 
+                hour: 'numeric', 
+                minute: 'numeric', 
+                second: 'numeric' 
+              };
+              const timeString = new Date().toLocaleTimeString('en-US', options);
+            return timeString;
+          }
+      
+          // Function to get current temperature for Bangkok
+          async function getBangkokTemp() {
+            const response = await fetch("https://api.openweathermap.org/data/2.5/weather?q=Bangkok,th&appid=b29b5c17022a575dd5fac619d51a160f&units=metric");
+            const data = await response.json();
+            const temp = data.main.temp;
+            return temp;
+          }
+      
+          // Function to get current temperature for Holland
+          async function getHollandTemp() {
+            const response = await fetch("https://api.openweathermap.org/data/2.5/weather?q=Holland,michigan&appid=b29b5c17022a575dd5fac619d51a160f&units=metric");
+            const data = await response.json();
+            const temp = data.main.temp;
+            return temp;
+          }
+      
+          // Function to display time and temperature
+          async function displayTimeAndTemp() {
+            const bangkokTemp = await getBangkokTemp();
+            const hollandTemp = await getHollandTemp();
+            const bangkokTime = getTime('Asia/Bangkok');
+            const hollandTime = getTime('America/Detroit');
+      
+            document.getElementById("bangkok-time").textContent = "Bangkok Time: " + bangkokTime;
+            document.getElementById("holland-time").textContent = "Holland Time: " + hollandTime;
+            document.getElementById("bangkok-temp").textContent = "Bangkok Temperature: " + bangkokTemp + "°C";
+            document.getElementById("holland-temp").textContent = "Holland Temperature: " + hollandTemp + "°C";
+          }
+        </script>
+      </head>
+      <body onload="displayTimeAndTemp()">
         <h1>Current Time and Temperature</h1>
         <p id="bangkok-time"></p>
         <p id="bangkok-temp"></p>
@@ -70,49 +99,58 @@
       </body>
     </div>
 
-    <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
+        <!-- Third page -->
+        <div class="page-container">
+          <head>
+            <title>Page 2</title>
+          </head>
+          <body>
+            <h2>Page 2</h2>
+            <p>Curabitur eget facilisis odio, quis dapibus quam. Fusce accumsan volutpat nunc in ultrices. In vel ipsum at metus bibendum interdum id id ipsum. Nunc eu tincidunt mauris, ut tristique erat. Nullam eu elit at mi mollis hendrerit.</p>
+            <p>Ut consequat euismod elit nec laoreet. Maecenas malesuada ultrices tortor, eget efficitur lorem interdum eu. Nullam finibus, lacus ac bibendum tincidunt, nunc ipsum varius purus, ac pellentesque libero turpis quis sem.</p>
+            <p>Praesent sed tortor nec nunc ultricies finibus. Nulla tempor orci euismod, tempor sapien ac, iaculis sapien. Aenean vel fermentum turpis. Nam sit amet felis ornare, eleifend quam vel, varius nulla.</p>
+            <!-- Add more content here as needed -->
+          </body>
+        </div>
+
+            <!-- Fourth page -->
+    <div class="page-container">
+      <head>
+        <title>Page 2</title>
+      </head>
       <body>
-        <h2>Window 3</h2>
-        <div id="window3"></div>
-        <script>
-          // JavaScript code for Window 3
-          document.getElementById("window3").innerHTML = "Hello from Window 3!";
-        </script>
+        <h2>Page 2</h2>
+        <p>Curabitur eget facilisis odio, quis dapibus quam. Fusce accumsan volutpat nunc in ultrices. In vel ipsum at metus bibendum interdum id id ipsum. Nunc eu tincidunt mauris, ut tristique erat. Nullam eu elit at mi mollis hendrerit.</p>
+        <p>Ut consequat euismod elit nec laoreet. Maecenas malesuada ultrices tortor, eget efficitur lorem interdum eu. Nullam finibus, lacus ac bibendum tincidunt, nunc ipsum varius purus, ac pellentesque libero turpis quis sem.</p>
+        <p>Praesent sed tortor nec nunc ultricies finibus. Nulla tempor orci euismod, tempor sapien ac, iaculis sapien. Aenean vel fermentum turpis. Nam sit amet felis ornare, eleifend quam vel, varius nulla.</p>
+        <!-- Add more content here as needed -->
       </body>
     </div>
 
-    <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
-      <body>
-        <h2>Window 4</h2>
-        <div id="window4"></div>
-        <script>
-          // JavaScript code for Window 4
-          document.getElementById("window4").innerHTML = "Hello from Window 4!";
-        </script>
-      </body>
-    </div>
+        <!-- Fifth page -->
+        <div class="page-container">
+          <head>
+            <title>Page 2</title>
+          </head>
+          <body>
+            <h2>Page 2</h2>
+            <p>Curabitur eget facilisis odio, quis dapibus quam. Fusce accumsan volutpat nunc in ultrices. In vel ipsum at metus bibendum interdum id id ipsum. Nunc eu tincidunt mauris, ut tristique erat. Nullam eu elit at mi mollis hendrerit.</p>
+            <p>Ut consequat euismod elit nec laoreet. Maecenas malesuada ultrices tortor, eget efficitur lorem interdum eu. Nullam finibus, lacus ac bibendum tincidunt, nunc ipsum varius purus, ac pellentesque libero turpis quis sem.</p>
+            <p>Praesent sed tortor nec nunc ultricies finibus. Nulla tempor orci euismod, tempor sapien ac, iaculis sapien. Aenean vel fermentum turpis. Nam sit amet felis ornare, eleifend quam vel, varius nulla.</p>
+            <!-- Add more content here as needed -->
+          </body>
+        </div>
 
-    <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
+            <!-- Sixth page -->
+    <div class="page-container">
+      <head>
+        <title>Page 2</title>
+      </head>
       <body>
-        <h2>Window 5</h2>
-        <div id="window5"></div>
-        <script>
-          // JavaScript code for Window 5
-          document.getElementById("window5").innerHTML = "Hello from Window 5!";
-        </script>
+        <h2>Page 2</h2>
+        <p>Curabitur eget facilisis odio, quis dapibus quam. Fusce accumsan volutpat nunc in ultrices. In vel ipsum at metus bibendum interdum id id ipsum. Nunc eu tincidunt mauris, ut tristique erat. Nullam eu elit at mi mollis hendrerit.</p>
+        <p>Ut consequat euismod elit nec laoreet. Maecenas malesuada ultrices tortor, eget efficitur lorem interdum eu. Nullam finibus, lacus ac bibendum tincidunt, nunc ipsum varius purus, ac pellentesque libero turpis quis sem.</p>
+        <p>Praesent sed tortor nec nunc ultricies finibus. Nulla tempor orci euismod, tempor sapien ac, iaculis sapien. Aenean vel fermentum turpis. Nam sit amet felis ornare, eleifend quam vel, varius nulla.</p>
+        <!-- Add more content here as needed -->
       </body>
     </div>
-
-    <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
-      <body>
-        <h2>Window 6</h2>
-        <div id="window6"></div>
-        <script>
-          // JavaScript code for Window 6
-          document.getElementById("window6").innerHTML = "Hello from Window 6!";
-        </script>
-      </body>
-    </div>
-  </div>
-</body>
-</html>
