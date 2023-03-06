@@ -2,120 +2,117 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Eight Windows with Different JavaScripts</title>
+  <title>Six Windows with Different JavaScripts</title>
+  <script>
+
+  // Function to get current time
+  function getTime(timeZone) {
+    const options = { 
+      timeZone: timeZone, 
+        hour12: true, 
+        hour: 'numeric', 
+        minute: 'numeric', 
+        second: 'numeric' 
+      };
+      const timeString = new Date().toLocaleTimeString('en-US', options);
+    return timeString;
+  }
+
+  // Function to get current temperature for Bangkok
+  async function getBangkokTemp() {
+    const response = await fetch("https://api.openweathermap.org/data/2.5/weather?q=Bangkok,th&appid=b29b5c17022a575dd5fac619d51a160f&units=metric");
+    const data = await response.json();
+    const temp = data.main.temp;
+    return temp;
+  }
+
+  // Function to get current temperature for Holland
+  async function getHollandTemp() {
+    const response = await fetch("https://api.openweathermap.org/data/2.5/weather?q=Holland,michigan&appid=b29b5c17022a575dd5fac619d51a160f&units=metric");
+    const data = await response.json();
+    const temp = data.main.temp;
+    return temp;
+  }
+
+  // Function to display time and temperature
+  async function displayTimeAndTemp() {
+    const bangkokTemp = await getBangkokTemp();
+    const hollandTemp = await getHollandTemp();
+    const bangkokTime = getTime('Asia/Bangkok');
+    const hollandTime = getTime('America/Detroit');
+
+    document.getElementById("bangkok-time").textContent = "Bangkok Time: " + bangkokTime;
+    document.getElementById("holland-time").textContent = "Holland Time: " + hollandTime;
+    document.getElementById("bangkok-temp").textContent = "Bangkok Temperature: " + bangkokTemp + "°C";
+    document.getElementById("holland-temp").textContent = "Holland Temperature: " + hollandTemp + "°C";
+  }
+</script>
 </head>
 <body onload="displayTimeAndTemp()">
-  <h1>Eight Windows with Different JavaScripts</h1>
+  <h1>Six Windows with Different JavaScripts</h1>
 
   <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
     <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
       <h2>Window 1</h2>
       <div id="window1"></div>
       <script>
-        // JavaScript code for Window 1
-         // Function to get current time
-        function getTime(timeZone) {
-        const options = { 
-          timeZone: timeZone, 
-            hour12: false, 
-            hour: 'numeric', 
-            minute: 'numeric', 
-            second: 'numeric' 
-          };
-        const timeString = new Date().toLocaleTimeString('en-US', options);
-        return timeString;
-        }
-
-        // Function to get current temperature for Bangkok
-       async function getBangkokTemp() {
-         const response = await fetch("https://api.openweathermap.org/data/2.5/weather?q=Bangkok,th&appid=b29b5c17022a575dd5fac619d51a160f&units=metric");
-         const data = await response.json();
-         const temp = data.main.temp;
-         return temp;
-       }
-
-       // Function to get current temperature for Holland
-       async function getHollandTemp() {
-        const response = await fetch("https://api.openweathermap.org/data/2.5/weather?q=Holland,michigan&appid=b29b5c17022a575dd5fac619d51a160f&units=metric");
-        const data = await response.json();
-        const temp = data.main.temp;
-        return temp;
-       }
-
-      // Function to display time and temperature
-      async function displayTimeAndTemp() {
-        const bangkokTemp = await getBangkokTemp();
-        const hollandTemp = await getHollandTemp();
-        const bangkokTime = getTime('Asia/Bangkok');
-        const hollandTime = getTime('America/Detroit');
-
-        document.getElementById("bangkok-time").textContent = "Bangkok Time: " + bangkokTime;
-        document.getElementById("holland-time").textContent = "Holland Time: " + hollandTime;
-        document.getElementById("bangkok-temp").textContent = "Bangkok Temperature: " + bangkokTemp + "°C";
-        document.getElementById("holland-temp").textContent = "Holland Temperature: " + hollandTemp + "°C";
-      }
+        
       </script>
+    </div>
+
+    <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
+      <body>
         <h1>Current Time and Temperature</h1>
         <p id="bangkok-time"></p>
         <p id="bangkok-temp"></p>
         <p id="holland-time"></p>
         <p id="holland-temp"></p>
+      </body>
     </div>
 
     <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
-      <h2>Window 2</h2>
-      <div id="window2"></div>
-      <script>
-        // JavaScript code for Window 2
-        document.getElementById("window2").innerHTML = "Hello from Window 2!";
-      </script>
+      <body>
+        <h2>Window 3</h2>
+        <div id="window3"></div>
+        <script>
+          // JavaScript code for Window 3
+          document.getElementById("window3").innerHTML = "Hello from Window 3!";
+        </script>
+      </body>
     </div>
 
     <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
-      <h2>Window 3</h2>
-      <div id="window3"></div>
-      <script>
-        // JavaScript code for Window 3
-        document.getElementById("window3").innerHTML = "Hello from Window 3!";
-      </script>
+      <body>
+        <h2>Window 4</h2>
+        <div id="window4"></div>
+        <script>
+          // JavaScript code for Window 4
+          document.getElementById("window4").innerHTML = "Hello from Window 4!";
+        </script>
+      </body>
     </div>
 
     <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
-      <h2>Window 4</h2>
-      <div id="window4"></div>
-      <script>
-        // JavaScript code for Window 4
-        document.getElementById("window4").innerHTML = "Hello from Window 4!";
-      </script>
+      <body>
+        <h2>Window 5</h2>
+        <div id="window5"></div>
+        <script>
+          // JavaScript code for Window 5
+          document.getElementById("window5").innerHTML = "Hello from Window 5!";
+        </script>
+      </body>
     </div>
 
     <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
-      <h2>Window 5</h2>
-      <div id="window5"></div>
-      <script>
-        // JavaScript code for Window 5
-        document.getElementById("window5").innerHTML = "Hello from Window 5!";
-      </script>
+      <body>
+        <h2>Window 6</h2>
+        <div id="window6"></div>
+        <script>
+          // JavaScript code for Window 6
+          document.getElementById("window6").innerHTML = "Hello from Window 6!";
+        </script>
+      </body>
     </div>
-
-    <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
-      <h2>Window 6</h2>
-      <div id="window6"></div>
-      <script>
-        // JavaScript code for Window 6
-        document.getElementById("window6").innerHTML = "Hello from Window 6!";
-      </script>
-    </div>
-
-    <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
-      <h2>Window 7</h2>
-      <div id="window7"></div>
-      <script>
-        // JavaScript code for Window 7
-        document.getElementById("window7").innerHTML = "Hello from Window 7!";
-      </script>
-    </div>
-
-    <div style="width: 30%; height: 200px; margin: 10px; border: 1px solid black;">
-      <h2>Window 8</h2>
-      <div id
+  </div>
+</body>
+</html>
