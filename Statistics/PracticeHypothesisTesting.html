@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hypothesis Testing Practice</title>
+    <style type="text/css">
+        body {
+            background-color: #D1E7D1;
+        }
+        h1 {
+            text-align: center;
+        }
+        h2 {
+            text-align: center;
+        }
+        section.container {
+            text-align: center;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+        section {
+            margin-bottom: 20px;
+        }
+        button {
+            margin-top: 10px;
+        }
+        input {
+            margin-left: 5px;
+        }
+        td:nth-child(even) {
+            background-color: #d0cdcd;
+        }
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 10px;
+            text-align: center;
+            margin: 0 auto;
+            margin-bottom: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+        }
+        .row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        .col {
+            flex: 1;
+            margin: 10px;
+            border: 1px solid black;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body onload="generate()">
+    <h1>Hypothesis Testing Practice</h1>
+    <section class="container">
+        <section class="col">
+            <h2>Population and Sample Information</h2>
+            <p>Population Mean Claim: <span id="populationMean"></span></p>
+            <p>Sample Standard Deviation: <span id="sampleSD"></span></p>
+            <p>Sample Mean: <span id="sampleMean"></span></p>
+            <p>Number of Samples: <span id="numSamples"></span></p>
+            <p>Alpha: <span id="alpha"></span></p>
+            <button onclick="generate()">Generate New Values</button>
+        </section>
+    </section>
+        <section class="row">
+            <section class="col">
+                <h2>Left-Tailed Test</h2>
+                <p>Null Hypothesis: <span id="lt_null"></p>
+                <p>Alternative Hypothesis: <span id="lt_alt"></p>
+                <p>Test Statistic: <span id="lt_test"></span></p>
+                <p>Critical Value: <span id="lt_criticalValue"></span></p>
+                <p>Null is Accepted/Rejected: <span id="lt_result"></span></p>
+                <button onclick="calculate_lt()">Calculate</button>
+            </section>
+            <section class="col">
+                <h2>Two-Tailed Test</h2>
+                <p>Null Hypothesis: <span id="tt_null"></p>
+                <p>Alternative Hypothesis: <span id="tt_alt"></p>
+                <p>Test Statistic: <span id="tt_test"></span></p>
+                <p>Critical Value: <span id="tt_criticalValue"></span></p>
+                <p>Null is Accepted/Rejected: <span id="tt_result"></span></p>
+                <button onclick="calculate_tt()">Calculate</button>
+            </section>
+            <section class="col">
+                <h2>Right-Tailed Test</h2>
+                <p>Null Hypothesis: <span id="rt_null"></span></p>
+                <p>Alternative Hypothesis: <span id="rt_alt"></span></p>
+                <p>Test Statistic: <span id="rt_test"></span></p>
+                <p>Critical Value: <span id="rt_criticalValue"></span></p>
+                <p>Null is Accepted/Rejected: <span id="rt_result"></span></p>
+                <button onclick="calculate_rt()">Calculate</button>
+            </section>
+        </section>
+    
+    <script type="text/javascript">
+
+    function generate() {
+        var populationMean = (Math.random() * 100);
+        var sampleMeanOffset = Math.random() * 20 - 10;
+        var sampleMean = (populationMean + sampleMeanOffset);
+        populationMean = populationMean.toFixed(2);
+        sampleMean = sampleMean.toFixed(2);
+        var sampleSD = (Math.random() * 10);
+        sampleSD = sampleSD.toFixed(2);
+        var numSamples = Math.floor(Math.random() * 100) + 10;
+        var randomNumber = Math.random();
+        if (randomNumber < 0.5) {
+            var alpha = 0.05;
+        } else {
+            var alpha = 0.01;
+        }
+
+        document.getElementById("populationMean").innerHTML = populationMean;
+        document.getElementById("sampleMean").innerHTML = sampleMean;
+        document.getElementById("sampleSD").innerHTML = sampleSD;
+        document.getElementById("numSamples").innerHTML = numSamples;
+        document.getElementById("alpha").innerHTML = alpha;
+    }
+
+    function calculate_lt() {
+        var popMean = parseFloat(document.getElementById("populationMean").innerHTML);
+        var sampleSD = parseFloat(document.getElementById("sampleSD").innerHTML);
+        var n = parseInt(document.getElementById("numSamples").innerHTML);
+        var sampleMean = parseFloat(document.getElementById("sampleMean").innerHTML);
+        var alpha = parseFloat(document.getElementById("alpha").innerHTML);
+        document.getElementById("lt_null").innerHTML = "µ = " + popMean;
+        document.getElementById("lt_alt").innerHTML = "µ < " + popMean;
+
+        var testStatistic = (sampleMean - popMean) / (sampleSD / Math.sqrt(n));
+
+        document.getElementById("lt_test").innerHTML = testStatistic.toFixed(2);
+
+        // determine critical value
+        if (alpha = 0.05) {
+            var criticalValue = -1.645;
+        } else {
+            var criticalValue = -2.33;
+        }
+        document.getElementById("lt_criticalValue").innerHTML = criticalValue;
+
+        if (testStatistic < criticalValue) {
+            document.getElementById("lt_result").innerHTML = "Rejected";
+        } else {
+            document.getElementById("lt_result").innerHTML = "Accepted";
+        }
+    }
+
+    function calculate_tt() {
+        var popMean = parseFloat(document.getElementById("populationMean").innerHTML);
+        var sampleSD = parseFloat(document.getElementById("sampleSD").innerHTML);
+        var n = parseInt(document.getElementById("numSamples").innerHTML);
+        var sampleMean = parseFloat(document.getElementById("sampleMean").innerHTML);
+        document.getElementById("tt_null").innerHTML = "µ = " + popMean;
+        document.getElementById("tt_alt").innerHTML = "µ < or > " + popMean;
+
+        var testStatistic = (sampleMean - popMean) / (sampleSD / Math.sqrt(n));
+
+        document.getElementById("tt_test").innerHTML = testStatistic.toFixed(2);
+
+        // determine critical value
+        if (alpha = 0.05) {
+            var criticalValue = 1.96;
+        } else {
+            var criticalValue = 2.58;
+        }
+        document.getElementById("tt_criticalValue").innerHTML = criticalValue;
+
+
+        if (testStatistic < -criticalValue || testStatistic > critialValue) {
+            document.getElementById("tt_result").innerHTML = "Rejected";
+        } else {
+            document.getElementById("tt_result").innerHTML = "Accepted";
+        }
+    }
+
+    function calculate_rt() {
+        var popMean = parseFloat(document.getElementById("populationMean").innerHTML);
+        var sampleSD = parseFloat(document.getElementById("sampleSD").innerHTML);
+        var n = parseInt(document.getElementById("numSamples").innerHTML);
+        var sampleMean = parseFloat(document.getElementById("sampleMean").innerHTML);
+        document.getElementById("rt_null").innerHTML = "µ = " + popMean;
+        document.getElementById("rt_alt").innerHTML = "µ > " + popMean;
+
+        var testStatistic = (sampleMean - popMean) / (sampleSD / Math.sqrt(n));
+
+        document.getElementById("rt_test").innerHTML = testStatistic.toFixed(2);
+
+        // determine critical value
+        if (alpha = 0.05) {
+            var criticalValue = 1.645;
+        } else {
+            var criticalValue = 2.33;
+        }
+        document.getElementById("rt_criticalValue").innerHTML = criticalValue;
+
+        if (testStatistic > 1.96) {
+            document.getElementById("rt_result").innerHTML = "Rejected";
+        } else {
+            document.getElementById("rt_result").innerHTML = "Accepted";
+        }
+    }
+</script>
+
+</body>
+</html>
