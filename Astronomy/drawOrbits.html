@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Solar System</title>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #solarCanvas {
+        border: 1px solid black;
+        width: 100vh;
+        height: 100vh;
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+        margin: 0 auto;
+        background-color: black;
+      }
+      #buttons {
+        text-align: center;
+      }
+    </style>
+    <!-- calculateOrbits.js has the following functions:
+          class SolarSystemBody to define each planet
+          getDay() gets the current Julian number
+          eccentricAnomaly() iterates e and M to get E
+          getEarthHC(day) gets Earth's helio coord
+          getHelio(solarSystemBody, day) gets a planet's current helio coord
+          definePlanetCoord() runs the above functions and returns a planets array-->
+    <script src="calculateOrbits.js"></script>
+    <!-- drawObtis.js contains a function drawOrbits(planets) and plots them-->
+    <script src="drawOrbits.js"></script>
+  </head>
+  <body>
+    <canvas id="solarCanvas" width="800" height="800"></canvas>
+    <div id="buttons">
+      <button onclick="reset()">Today</button>
+      <button onclick="subtractDay()">One Day Past</button>    
+      <button onclick="addDay()">One Day Future</button>
+    </div>
+
+    <!-- the calculateOrbits.js script creates arrays with the x, y, and z coordinates
+          of planets and the eccentricity [xh, yh, zh, e, color] called:
+          mercuryHeliocentricCoordinates
+          venusHeliocentricCoordinates
+          earthHeliocentricCoordinates
+          marsHeliocentricCoordinates
+          jupiterHeliocentricCoordinates
+          saturnHeliocentricCoordinates
+          uranusHeliocentricCoordinates
+          neptuneHeliocentricCoordinates
+        -->   
+
+    <script>
+      // This code updates the heliocentric coordinates with a different day
+      // using offset as a variable with how many days before or after
+      // Define various values:
+
+      const solarCanvas = document.getElementById('solarCanvas');
+      const ctx = solarCanvas.getContext('2d');
+      var offset = 0;
+      const planetSize = 10;
+
+      // Get today's positions with offset = 0 (offset is +x for x days in future and -x for x days in past)
+      var planets = definePlanetCoordinates(0);
+      console.log(planets);
+
+      // Draw today's orbits
+      drawOrbits(planets);
+
+      function reset() {
+        offset = 0;
+        var planets = definePlanetCoordinates(0);
+        drawOrbits(planets);
+      }
+
+      function subtractDay() {
+        offset = offset - 1;
+         console.log("offset-: "+offset);
+         var planets = definePlanetCoordinates(offset);
+         drawOrbits(planets);
+      }
+
+      function addDay() {
+        offset = offset + 1;
+        console.log("offset+: "+offset);
+        var planets = definePlanetCoordinates(offset);
+        drawOrbits(planets);
+      }
+
+    </script>
+  </body>
+</html>
