@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Geometric Probability Problem</title>
+	<style type="text/css">
+       body {
+           background-color: #D1E7D1;
+       }
+       h1 {
+           text-align: center;
+       }
+       section.container {
+           text-align: center;
+       }
+       h2 {
+           margin-top: 20px;
+       }
+       section {
+           margin-bottom: 20px;
+       }
+       button {
+           margin-top: 10px;
+       }
+       input {
+           margin-left: 5px;
+       }
+       .container {
+           display: flex;
+           justify-content: center;
+       }
+       .row {
+           display: flex;
+           flex-direction: row;
+           justify-content: center;
+       }
+       .col {
+           flex: 1;
+           margin: 10px;
+           border: 1px solid black;
+           padding: 10px;
+           justify-content: center;
+       }
+	</style>
+</head>
+<body onload="generate()">
+	<h1>Geometric Probability Problem</h1>
+	<section class="container">
+        <section class="col">
+            <p>Probability of Success (p) = <span id="p"></span></p>
+            <button onclick="generate()">Generate New Values</button>
+        </section>
+	</section>
+	
+        <section class="row">
+            <section class="col">
+                <p>What is the probability the first sucess will be on attempt #<span id="attempt"></span>?</p>
+                <p>Probability: <span id="attemptProb"></span></p>
+		        <button onclick="calculateAttempt()">Calculate</button>
+            </section>
+            <section class="col">
+                <p>What is the probability at least 1 success will occure in <span id="cumulativeAttempt"></span> attempts?</p>
+                <p>Probability: <span id="cumulativeAttemptProb"></span></p>
+		        <button onclick="calculateCumulativeAttempt()">Calculate</button>
+            </section>
+         </section>
+    
+
+	<script type="text/javascript">
+		function generate() {
+			var p = Math.random().toFixed(2); // Generate a random value between 0 and 1 and round to 2 decimal places
+            var attempt = Math.floor(Math.random() * 10) + 1; // Generate a random value between 1 and 10
+            var cumulativeAttempt = Math.floor(Math.random() * 7) + 2; // Generate a random value between 2 and 8
+			
+            document.getElementById("p").innerHTML = p; // Display the value in the HTML
+            document.getElementById("attempt").innerHTML = attempt;
+            document.getElementById("cumulativeAttempt").innerHTML = cumulativeAttempt;
+
+            // Clear any previous results
+            document.getElementById("attemptProb").innerHTML = "";
+            document.getElementById("cumulativeAttemptProb").innerHTML = "";
+		}
+
+		function calculateAttempt() {
+            // Get values from the HTML
+			var p = document.getElementById("p").innerHTML;
+            var attempt = document.getElementById("attempt").innerHTML;
+			
+            // Calculate and record probability of nth attempt being successful
+            var attemptProb = p * Math.pow((1 - p), attempt - 1);
+            attemptProb = attemptProb.toFixed(4);
+            document.getElementById("attemptProb").innerHTML = attemptProb;
+		}
+
+        function calculateCumulativeAttempt() {
+            // Get values from the HTML
+			var p = document.getElementById("p").innerHTML;
+            var cumulativeAttempt = document.getElementById("attempt").innerHTML;
+			
+            // Calculate and record probability of nth attempt being successful
+            var cumulativeAttemptProb = 1 - Math.pow(1 - p, cumulativeAttempt);;
+            cumulativeAttemptProb = cumulativeAttemptProb.toFixed(4);
+            document.getElementById("cumulativeAttemptProb").innerHTML = cumulativeAttemptProb;
+		}
+	</script>
+</body>
+</html>
+
+
