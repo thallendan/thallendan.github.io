@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Statistical Data Generator</title>
+	<style>
+        body {
+        background-color: #D1E7D1;
+        }
+        h1 {
+        text-align: center;
+        }
+        section.container {
+        text-align: center;
+        }
+        h2 { margin-top: 20px; }
+        section { margin-bottom: 20px; }
+        button { margin-top: 10px; }
+        input { margin-left: 5px; }
+        .container {
+                display: flex;
+                justify-content: center;
+        }
+        .row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        .col {
+            flex: 1;
+            margin: 10px;
+            border: 1px solid black;
+            padding: 10px;
+			max-width: 90%;
+			overflow-wrap: break-word;
+        }
+	</style>
+</head>
+<body onload="generateData()">
+	<h1>Statistical Data Generator</h1>
+    <section class = "container">
+        <section class = "col">
+            <p>
+                <label for="num_points">Number of data points:</label>
+                <input type="range" id="num_points" name="num_points" min="5" max="25" value="15">
+                <input type="checkbox" id="random_points" name="random_points">
+                <label for="random_points">Random</label>
+            </p>
+            <p>
+                <label for="median">Median:</label>
+                <input type="range" id="median" name="median" min="15" max="85" value="50">
+                <input type="checkbox" id="random_median" name="random_median">
+                <label for="random_median">Random</label>
+            </p>
+            <p>
+                <label for="std_dev">Standard deviation:</label>
+                <input type="range" id="std_dev" name="std_dev" min="3" max="30" value="10">
+                <input type="checkbox" id="random_std_dev" name="random_std_dev">
+                <label for="random_std_dev">Random</label>
+            </p>
+            <button onclick="generateData()">Generate New Data</button>
+            <br>
+            <br>
+         </section>
+         <section class = "col">
+            <canvas id="bellCurveChart" width="400" height="200"></canvas>
+         </section>
+    </section>  
+    <section class = "container">
+        <section class = "col">
+            <h2>Data generated:</h2>
+            <p><span id="data"></span></p>
+			<button onclick="getSortedData(data)">Show Sorted Data</button>
+			<p><span id="sortedData"></span></p>
+         </section>
+    </section>
+    <section class = "contianer">
+        <section class = "row">
+          <section class = "col">
+                <h2>Range</h2>
+                <button onclick="getRange(data)">Show Range:</button>
+                <p>Range: <span id="range"></span></p>
+            </section>
+            <section class = "col">
+                <h2>Q1, Median, Q2</h2>
+                <button onclick="getMedianQuartiles(data)">Show Median and Quartiles:</button>
+                <p>Q1 (Sheets): <span id="q1"></span></p>
+                <p>Q1 (TI): <span id="q1TI"></span></p>
+                <p>Median: <span id="actualMedian"></span></p>
+                <p>Q3 (Sheets): <span id="q3"></span></p>
+                <p>Q3 (TI): <span id="q3TI"></span></p>
+				<a href="https://en.wikipedia.org/wiki/Quartile">See Quartile on Wikipedia</a>
+
+            </section>
+            <section class = "col">
+                <h2>Mode and Mean</h2>
+                <button onclick="getModeMean(data)">Show Mode and Mean:</button>
+                <p>Mode: <span id="mode"></span></p>
+                <p>Mean: <span id="mean"></span></p>
+             </section>
+            <section class = "col">
+                <h2>Sample and Population SD</h2>
+                <button onclick="getStandardDeviations(data)">Show Sample and Population SD:</button>
+                <p>Sample SD: <span id="sample_std_dev"></span></p>
+                <p>Population SD: <span id="population_std_dev"></span></p>
+            </section>
+        </section>
+    </section>
+
+	<script>
+
+		function generateData() {
+			var numPoints = parseInt(document.getElementById("num_points").value);
+			var median = parseInt(document.getElementById("median").value);
+			var stdDev = parseInt(document.getElementById("std_dev").value);
+			var randomPoints = document.getElementById("random_points").checked;
+			var randomMedian = document.getElementById("random_median").checked;
+			var randomStdDev = document.getElementById("random_std_dev").checked;
+			var data = [];
+			if (randomPoints) {
+				numPoints = Math.floor(Math.random() * 100) + 1;
+			}
+			if (randomMedian) {
+				// Generate a random Median from 20 to 60
+				median = Math.floor(Math.random() * 60) + 21;
+			}
+			if (randomStdDev) {
+				// Generate random Standard Deviation from 5 to 25.
+				stdDev = Math.floor(Math.random() * 20) + 6;
+			}
+			// Start of code to actually get median and stdDev
+			// First, generate half of the data points approximating the standard deviation
+			 for (var i = 0; i < Math.floor(numPoints/4); i++) {
+				// Add 3 data points around 1 sd of the median
+				data.push(Math.floor(Math.random() * 2 * stdDev) - stdDev + median + 1);
+				data.push(Math.floor(Math.random() * 2 * stdDev) - stdDev + median + 1);
+				data.push(Math.floor(Math.random() * 2 * stdDev) - stdDev + median + 1);
+				// Add 2 data points around 2 sd of the median
+				data.push(Math.floor(Math.random() * 4 * stdDev) - 2 * stdDev + median + 1);
+				data.push(Math.floor(Math.random() * 4 * stdDev) - 2 * stdDev + median + 1);
+				// Add 1 data point around 3 sd of the median
+				data.push(Math.floor(Math.random() * 6 * stdDev) - 3 * stdDev + median + 1);
+			 }
+			 let pointsSoFar = data.length;
+			 while (pointsSoFar < numPoints) {
+				 var currentMedian = getMedian(data);
+				 var currentStdDev = getSampleStandardDeviation(data);
+			     if (currentMedian < median) {
+					if (currentStdDev < stdDev) {
+						// add a point that is one to two standard deviations away from mean
+						var zScore = 2/(1-currentStdDev/stdDev);
+						var newPoint = Math.floor(zScore*stdDev + getMean(data));
+						if (newPoint < currentMedian) {
+							newPoint = currentMedian + 1;
+						}
+						data.push(newPoint);
+					} else {
+						// add a point that is less than one standard deviation from mean
+						var zScore = Math.random()/2;
+						var newPoint = Math.floor(zScore*stdDev + getMean(data));
+						if (newPoint < currentMedian) {
+							newPoint = currentMedian + 1;
+						}
+						data.push(newPoint);
+					}
+			 	 } else {
+					// currentMedian >= median
+					if (currentStdDev < stdDev) {
+						// add a point that is negative one to negative two standard deviations away from mean
+						var zScore = -2/(1-currentStdDev/stdDev);
+						var newPoint = Math.floor(zScore*stdDev + getMean(data));
+						if (newPoint > currentMedian) {
+							newPoint = currentMedian - 1;
+						}
+						data.push(newPoint);
+					} else {
+						// add a point that is less than negative one standard deviation from mean
+						var zScore = -1*Math.random()/2;
+						var newPoint = Math.floor(zScore*stdDev + getMean(data));
+						if (newPoint > currentMedian) {
+							newPoint = currentMedian - 1;
+						}
+						data.push(newPoint);
+						}
+					}
+			     pointsSoFar = data.length;
+			 }
+
+			// document.getElementById("stats").style.display = "block";
+			document.getElementById("data").innerHTML = data;
+
+			// Set innerHTML values to nothing.
+			document.getElementById("range").innerHTML = "";
+			document.getElementById("q1").innerHTML = "";
+			document.getElementById("q1TI").innerHTML = "";
+			document.getElementById("actualMedian").innerHTML = "";
+			document.getElementById("q3").innerHTML = "";
+			document.getElementById("q3TI").innerHTML = "";
+			document.getElementById("mode").innerHTML = "";
+			document.getElementById("mean").innerHTML = "";
+			document.getElementById("sample_std_dev").innerHTML = "";
+			document.getElementById("population_std_dev").innerHTML = "";
+			document.getElementById("sortedData").innerHTML = "";
+
+            // Prepare to add a chart to the page showing mean and SD
+            var mean = getMean(data);
+            var stdDev = getSampleStandardDeviation(data);
+
+            // Prep canvas for bell curve chart
+            const canvas = document.getElementById('bellCurveChart');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw x and y axes
+            ctx.beginPath();
+            ctx.moveTo(0, height);
+            ctx.lineTo(width, height);
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(width /2 , 0);
+            ctx.lineTo(width / 2, height);
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Draw the curve
+            ctx.beginPath();
+            ctx.moveTo(0, height / 2);
+            for (let i = 0; i < 100; i ++) {
+                const x = i;
+                const y = normalDistribution(x, mean, stdDev);
+                const [xCoord, yCoord] = pointCoordinates(x, y);
+                ctx.lineTo(xCoord, yCoord);
+            }
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+		}
+
+        // The following functions are called by user button clicks.
+
+		function getSortedData(data) {
+			// Get the values from the HTML data object
+			var dataValues = document.getElementById("data").innerHTML;
+			// Change the data values to an array
+			var dataArray = dataValues.split(",").map(Number);
+
+			var sortedData = dataArray.slice().sort(function(a, b) {
+				return a - b;
+			});
+
+			document.getElementById("sortedData").innerHTML = sortedData;
+		}
+
+        function getRange(data) {
+			// Get the values from the HTML data object
+			var dataValues = document.getElementById("data").innerHTML;
+			// Change the data values to an array
+			var dataArray = dataValues.split(",").map(Number);
+			// Get the range using the "..." spread syntax.
+			var range = Math.max(...dataArray) - Math.min(...dataArray);
+
+            document.getElementById("range").innerHTML = range;
+			
+        }
+
+        function getMedianQuartiles(data) {
+
+			// Get the values from the HTML data object
+			var dataValues = document.getElementById("data").innerHTML;
+			// Change the data values to an array
+			var dataArray = dataValues.split(",").map(Number);
+
+            var q1 = getQuartile(dataArray, 0.25);
+            var q1TI = getFirstQuartileTI(dataArray);
+            var actualMedian = getMedian(dataArray);
+            var q3 = getQuartile(dataArray, 0.75);
+			var q3TI = getThirdQuartileTI(dataArray);
+
+			document.getElementById("q1").innerHTML = q1;
+			document.getElementById("q1TI").innerHTML = q1TI;
+			document.getElementById("actualMedian").innerHTML = actualMedian;
+			document.getElementById("q3").innerHTML = q3;
+			document.getElementById("q3TI").innerHTML = q3TI
+        }
+
+        function getModeMean(data) {
+
+			// Get the values from the HTML data object
+			var dataValues = document.getElementById("data").innerHTML;
+			// Change the data values to an array
+			var dataArray = dataValues.split(",").map(Number);
+
+			var mode = getMode(dataArray);
+			var mean = getMean(dataArray);
+			mean = mean.toFixed(3);
+
+			document.getElementById("mode").innerHTML = mode;
+			document.getElementById("mean").innerHTML = mean;
+        }
+
+        function getStandardDeviations(data) {
+
+			// Get the values from the HTML data object
+			var dataValues = document.getElementById("data").innerHTML;
+			// Change the data values to an array
+			var dataArray = dataValues.split(",").map(Number);
+
+			var sampleStdDev = getSampleStandardDeviation(dataArray);
+			sampleStdDev = sampleStdDev.toFixed(3);
+			var populationStdDev = getPopulationStandardDeviation(dataArray);
+			populationStdDev = populationStdDev.toFixed(3);
+
+			document.getElementById("sample_std_dev").innerHTML = sampleStdDev;
+			document.getElementById("population_std_dev").innerHTML = populationStdDev;
+        }
+
+        // The following functions are used to calculate values.
+
+		function getQuartile(data, percentile) {
+			var sortedData = data.slice().sort(function(a, b) {
+				return a - b;
+			});
+			var index = (sortedData.length - 1) * percentile;
+			if (Math.floor(index) == index) {
+				return sortedData[index];
+			} else {
+				var floor = Math.floor(index);
+				var ceil = Math.ceil(index);
+				return (sortedData[floor] * (ceil - index)) + (sortedData[ceil] * (index - floor));
+			}
+		}
+
+		function getFirstQuartileTI(data) {
+			var sortedData = data.sort(function(a,b) {
+				return a - b;
+			});
+			// Check if data length is even
+			if (Math.floor(sortedData.length/2) == sortedData.length/2) {
+				var halfLength = sortedData.length/2;
+				// Check if lower half is even in number
+				if (Math.floor(halfLength/2) == halfLength/2) {
+					// Remember, minus 1 because arrays start with index of zero.
+					return ((sortedData[halfLength / 2 - 1] + sortedData[halfLength / 2 + 1 - 1])/2);
+				} else {
+					// the lower half is odd in length
+					// Remember, minus 1 because arrays start with index of zero.
+					return (sortedData[(halfLength + 1) / 2 - 1]);
+				}
+			} else {
+				// Data length is odd
+				var halfLength = ((sortedData.length - 1)/2);
+				// Check if lower half is even in number
+				if (Math.floor(halfLength/2) == halfLength/2) {
+					// Remember, minus 1 because arrays start with index of zero.
+					return ((sortedData[halfLength / 2 - 1] + sortedData[halfLength / 2 + 1 - 1])/2);
+				} else {
+					// the lower half is odd in length
+					// Remember, minus 1 because arrays start with index of zero.
+					return (sortedData[(halfLength + 1) / 2 - 1]);
+				}
+			}
+		}
+		
+
+		function getThirdQuartileTI(data) {
+			var sortedData = data.sort(function(a,b) {
+				return a - b;
+			});
+			// Check if data length is even
+			if (Math.floor(sortedData.length/2) == sortedData.length/2) {
+				var halfLength = sortedData.length/2;
+				// Check if upper half is even in number
+				if (Math.floor(halfLength/2) == halfLength/2) {
+					// Remember, minus 1 because arrays start with index of zero.
+					return ((sortedData[3 * halfLength / 2 - 1] + sortedData[3 * halfLength / 2 + 1 - 1]) / 2);
+				} else {
+					// the upper half is odd in length
+					// Remember, minus 1 because arrays start with index of zero.
+					return (sortedData[(halfLength + 1) / 2 + halfLength - 1]);
+				}
+			} else {
+				// Data length is odd
+				var halfLength = ((sortedData.length - 1)/2);
+				// Check if upper half is even in number
+				if (Math.floor(halfLength/2) == halfLength/2) {
+					// Remember, minus 1 because arrays start with index of zero.
+					return ((sortedData[3 * halfLength/2 + 1 - 1] + sortedData[3 * halfLength / 2 + 2 - 1])/2);
+				} else {
+					// the upper half is odd in length
+					// Remember, minus 1 because arrays start with index of zero.
+					return (sortedData[3* (halfLength + 1) / 2 - 1]);
+				}
+			}
+		}
+
+		function getMedian(data) {
+			var sortedData = data.sort(function(a,b) {
+				return a - b;
+			});
+			// Check if data length is even
+			if (Math.floor(sortedData.length/2) == sortedData.length/2) {
+				var middleLength = sortedData.length/2;
+				// Remember, minus 1 because arrays start with index of zero.
+				return ((sortedData[middleLength - 1] + sortedData[middleLength + 1 - 1])/2);
+			} else {
+				// Data length is odd
+				var middleLength = (sortedData.length + 1)/2;
+				// Remember, minus 1 because arrays start with index of zero.
+				return (sortedData[middleLength - 1]);
+			}
+		}
+
+		function getMode(data) {
+			var counts = {};
+			var mode = null;
+			var maxCount = 0;
+			for (var i = 0; i < data.length; i++) {
+				var count = counts[data[i]] || 0;
+				count++;
+				counts[data[i]] = count;
+				if (count > maxCount) {
+					mode = data[i];
+					maxCount = count;
+				}
+			}
+			if (maxCount == 1) {mode = "no mode";}
+			return mode;
+		}
+
+		function getMean(data) {
+			var sum = 0;
+			for (var i = 0; i < data.length; i++) {
+				sum += data[i];
+			}
+			return sum / data.length;
+		}
+
+		function getSampleStandardDeviation(data) {
+			var mean = getMean(data);
+			var sumOfSquares = 0;
+			for (var i = 0; i < data.length; i++) {
+				sumOfSquares += Math.pow(data[i] - mean, 2);
+			}
+			return Math.sqrt(sumOfSquares / (data.length - 1));
+		}
+
+		function getPopulationStandardDeviation(data) {
+			var mean = getMean(data);
+			var sumOfSquares = 0;
+			for (var i = 0; i < data.length; i++) {
+				sumOfSquares += Math.pow(data[i] - mean, 2);
+			}
+			return Math.sqrt(sumOfSquares / data.length);
+		}
+
+        // Compute the standard normal distribution function value for a given x
+        function standardNormalDistribution(x) {
+            const e = 2.71828;
+            return Math.exp(-0.5 * x * x, e) / Math.sqrt(2 * Math.PI);
+        }
+
+        // Compute the value of the normal distribution function at a given x
+        function normalDistribution(x, mean, stdDev) {
+            return standardNormalDistribution((x - mean) / stdDev) / stdDev;
+        }
+
+        // Compute the x and y coordinates of a point on the chart given its values
+        function pointCoordinates(x, y) {
+            const canvas = document.getElementById('bellCurveChart');
+            const width = canvas.width;
+            const height = canvas.height;
+            const xCoord = x * width / 100;
+            const yCoord = height - (y * 20 * height / 2);
+            return [xCoord, yCoord];
+        }
+	</script>
+</body>
+</html>
