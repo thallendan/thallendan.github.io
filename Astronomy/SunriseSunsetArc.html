@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sunrise Sunset</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h1>Sun Times</h1>
+  <canvas id="canvasBKK" width="400" height="400"></canvas>
+  <canvas id="canvasGRR" width="400" height="400"></canvas>
+  <script>
+    $(document).ready(function() {
+      // Retrieve sunrise and sunset data from Sunrise-Sunset API
+      $.getJSON("https://api.sunrise-sunset.org/json?lat=13.7563&lng=100.5018", function(data) {
+
+        var sunriseDataTime = data.results.sunrise;
+        var sunriseTimeBKK = utcToBKK(sunriseDataTime);
+        console.log("THsr: "+sunriseTimeBKK);
+
+        var sunsetDataTime = data.results.sunset;
+        var sunsetTimeBKK = utcToBKK(sunsetDataTime);
+        console.log("THss: "+sunsetTimeBKK);
+
+        // Calculate the angle of the sunrise and sunset
+        var angleSunriseBKK = calculateAngle(sunriseTimeBKK, true);
+        var angleSunsetBKK = calculateAngle(sunsetTimeBKK, false);
+
+        // Draw the canvas
+        var canvasBKK = document.getElementById("canvasBKK");
+        var contextBKK = canvasBKK.getContext("2d");
+
+        // Add a heading
+        contextBKK.font = 'bold 16px Arial';
+        contextBKK.fillStyle = '#000000';
+        contextBKK.fillText('Sunrise/set in BKK', canvasBKK.width/2 - 70, 50);
+
+        // Draw the horizontal line representing 6 am to 6 pm
+        contextBKK.beginPath();
+        contextBKK.moveTo(0, canvasBKK.height / 2);
+        contextBKK.lineTo(canvasBKK.width, canvasBKK.height / 2);
+        contextBKK.lineWidth = 3;
+        contextBKK.stroke();
+
+        // Draw the arc representing the sunrise to sunset
+        contextBKK.beginPath();
+        contextBKK.arc(canvasBKK.width / 2, canvasBKK.height / 2, canvasBKK.height / 3, angleSunriseBKK, angleSunsetBKK, false);
+        contextBKK.lineWidth = 3;
+        contextBKK.stroke();
+
+        // add sunrise time text element
+        contextBKK.font = 'bold 14px Arial';
+        contextBKK.fillStyle = '#000000';
+        var sunriseX = canvasBKK.width / 3 + (canvasBKK.width / 3) * Math.cos(angleSunriseBKK) + 10;
+        var sunriseY = canvasBKK.height / 2 + (canvasBKK.height / 2) * Math.sin(angleSunriseBKK);
+        contextBKK.fillText(sunriseTimeBKK, sunriseX, sunriseY);
+
+        // add sunset time text element
+        contextBKK.font = 'bold 14px Arial';
+        contextBKK.fillStyle = '#000000';
+        var sunsetX = canvasBKK.width / 3 + (canvasBKK.width / 2) * Math.cos(angleSunsetBKK) + 10;
+        var sunsetY = (canvasBKK.height / 2) * (1 + Math.sin(angleSunsetBKK));
+        contextBKK.fillText(sunsetTimeBKK, sunsetX, sunsetY);
+      });
+
+      // Helper function to calculate the angle of a date object; morning is boolean
+      function calculateAngle(timeString, morning) {
+        var splitTime = timeString.split(':');
+        var hours = Number(splitTime[0]);
+        var minutes = Number(splitTime[1]);
+        var seconds = Number(splitTime[2].slice(0,2));
+        var totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+        if (morning) {
+            var angle = Math.PI / 2 + (totalSeconds / (12 * 60 * 60)) * Math.PI;
+        } else {
+            var angle = 3 * Math.PI /2 + (totalSeconds / (12 * 60 * 60)) * Math.PI;
+        }
+        return angle;
+      }
+    });
+
+    function utcToBKK(timeString) {
+        let splitTime = timeString.split(":");
+        let hourBKK = (Number(splitTime[0]) + 7) % 12;
+        
+        return hourBKK.toString() + ":" + splitTime[1] + ":" + splitTime[2].slice(0,2);
+    }
+
+
+    $(document).ready(function() {
+      // Retrieve sunrise and sunset data from Sunrise-Sunset API
+      $.getJSON("https://api.sunrise-sunset.org/json?lat=42.9634&lng=-85.6681", function(data) {
+
+        var sunriseDataTime = data.results.sunrise;
+        var sunriseTimeGRR = utcToGRR(sunriseDataTime);
+        console.log("GRRsr: "+sunriseTimeGRR);
+
+        var sunsetDataTime = data.results.sunset;
+        var sunsetTimeGRR = utcToGRR(sunsetDataTime);
+        console.log("GRRss: "+sunsetTimeGRR);
+
+        // Calculate the angle of the sunrise and sunset
+        var angleSunriseGRR = calculateAngle(sunriseTimeGRR, true);
+        var angleSunsetGRR = calculateAngle(sunsetTimeGRR, false);
+
+        // Draw the canvas
+        var canvasGRR = document.getElementById("canvasGRR");
+        var contextGRR = canvasGRR.getContext("2d");
+
+        // Add a heading
+        contextGRR.font = 'bold 16px Arial';
+        contextGRR.fillStyle = '#000000';
+        contextGRR.fillText('Sunrise/set in GRR', canvasGRR.width/2 - 70, 50);
+
+        // Draw the horizontal line representing 6 am to 6 pm
+        contextGRR.beginPath();
+        contextGRR.moveTo(0, canvasGRR.height / 2);
+        contextGRR.lineTo(canvasGRR.width, canvasGRR.height / 2);
+        contextGRR.lineWidth = 3;
+        contextGRR.stroke();
+
+        // Draw the arc representing the sunrise to sunset
+        contextGRR.beginPath();
+        contextGRR.arc(canvasGRR.width / 2, canvasGRR.height / 2, canvasGRR.height / 3, angleSunriseGRR, angleSunsetGRR, false);
+        contextGRR.lineWidth = 3;
+        contextGRR.stroke();
+
+        // add sunrise time text element
+        contextGRR.font = 'bold 14px Arial';
+        contextGRR.fillStyle = '#000000';
+        var sunriseX = canvasGRR.width / 3 + (canvasGRR.width / 3) * Math.cos(angleSunriseGRR) + 10;
+        var sunriseY = canvasGRR.height / 2 + (canvasGRR.height / 2) * Math.sin(angleSunriseGRR);
+        contextGRR.fillText(sunriseTimeGRR, sunriseX, sunriseY);
+
+        // add sunset time text element
+        contextGRR.font = 'bold 14px Arial';
+        contextGRR.fillStyle = '#000000';
+        var sunsetX = canvasGRR.width / 3 + (canvasGRR.width / 2) * Math.cos(angleSunsetGRR) + 10;
+        var sunsetY = (canvasGRR.height / 2) * (1 + Math.sin(angleSunsetGRR));
+        contextGRR.fillText(sunsetTimeGRR, sunsetX, sunsetY);
+      });
+
+      // Helper function to calculate the angle of a date object; morning is boolean
+      function calculateAngle(timeString, morning) {
+        var splitTime = timeString.split(':');
+        var hours = Number(splitTime[0]);
+        var minutes = Number(splitTime[1]);
+        var seconds = Number(splitTime[2].slice(0,2));
+        var totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+        if (morning) {
+            var angle = Math.PI / 2 + (totalSeconds / (12 * 60 * 60)) * Math.PI;
+        } else {
+            var angle = 3 * Math.PI /2 + (totalSeconds / (12 * 60 * 60)) * Math.PI;
+        }
+        return angle;
+      }
+    });
+
+    function utcToGRR(timeString) {
+        let splitTime = timeString.split(":");
+        // if (isDST()) {
+            let hourGRR = (Number(splitTime[0]) - 4) % 12;
+        // } else {
+        //     let hourGRR = (Number(splitTime[0]) - 5) % 12;
+        //}
+        
+        return hourGRR.toString() + ":" + splitTime[1] + ":" + splitTime[2].slice(0,2);
+    }
+
+    function isDST() {
+        var today = new Date();
+        var jan = new Date(today.getFullYear(), 0, 1);
+        var jul = new Date(today.getFullYear(), 6, 1);
+        var stdTimezoneOffset = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+
+        return today.getTimezoneOffset() < stdTimezoneOffset;
+    }
+    
+  </script>
+</body>
+</html>
