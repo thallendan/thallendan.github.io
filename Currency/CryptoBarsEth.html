@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vertical Bars with BTC Value</title>
+        <style>
+            body {
+                background-color: #D1E7D1;
+            }
+            .bar {
+                border: 3px solid black;
+                height: 200px;
+                width: 40px;
+                margin: 20px;
+                display: inline-block;
+                vertical-align: top;
+                position: relative;
+            }
+            .coin-silver {
+                border: 1px solid black;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                line-height: 30px;
+                background-image: url("silver-coin.png");
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+            .coin-gold {
+                border: 1px solid black;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                line-height: 30px;
+                background-image: url("gold-coin.png");
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+            .coin-eth {
+                border: 1px solid black;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                line-height: 30px;
+                background-image: url("eth-coin.png");
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+            .circle-value {
+                font-size: 12px;
+                position: absolute;
+                left: 150%;
+                transform: translateX(-50%);
+                font-weight: bold;
+            }
+            .min, .max {
+                position: absolute;
+                bottom: -20px;
+                width: 100%;
+                text-align: center;
+                font-size: 14px;
+            }
+            .max {
+                bottom: auto;
+                top: -20px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Crypto Values</h1>
+            <div class="bar">
+            <div class="coin coin-silver"></div>
+            <span class="circle-value" id="bar1Value"></span>
+            <div class="min">10000</div>
+            <div class="max">40000</div>
+        </div>
+        <div class="bar">
+            <div class="coin coin-gold"></div>
+            <span class="circle-value" id="bar2Value"></span>
+            <div class="min">100</div>
+            <div class="max">500</div>
+        </div>
+        <div class="bar">
+            <div class="coin coin-eth"></div>
+            <span class="circle-value" id="bar3Value"></span>
+            <div class="min">800</div>
+            <div class="max">3000</div>
+        </div>
+        <script src="cryptoBars.js"></script>
+    </body>
+</html>
