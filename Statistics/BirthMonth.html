@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Experiment Trials</title>
+    <script src="node_modules/chart.js/dist/chart.umd.js"></script>
+    <style type="text/css">
+        body {
+          background-color: #D1E7D1;
+        }
+        
+        h1, h2 {
+          text-align: center;
+        }
+        
+        input {
+          margin-left: 5px;
+        }
+        
+        button {
+          margin-top: 10px;
+        }
+        
+        canvas {
+          display: block;
+          margin: 0 auto;
+          margin-bottom: 20px;
+        }
+      </style>
+    <script>
+
+      let myChart;
+
+      function runExperiment() {
+        
+        // Get the number of trials from the user
+        const numTrials = parseInt(document.getElementById("numTrials").value);
+       
+        // Set up variables to track the number of successes and failures
+        let numSuccesses = 0;
+        let numFailures = 0;
+       
+        // Set up variables to track the percentage of successes and failures
+        const successPercentages = [0];
+        const failurePercentages = [0];
+       
+        // Generate and test the specified number of trials
+        for (let i = 0; i < numTrials; i++) {
+          // Generate a random set of 5 integers between 1 and 12
+          const numbers = [];
+          for (let j = 0; j < 5; j++) {
+            numbers.push(Math.floor(Math.random() * 12) + 1);
+          }
+         
+          // Check if at least 2 of the integers are the same
+          if (new Set(numbers).size < 5) {
+            numSuccesses++;
+          } else {
+            numFailures++;
+          }
+         
+          // Calculate the running percentages of successes and failures
+          successPercentages.push(numSuccesses / (numSuccesses + numFailures) * 100);
+          failurePercentages.push(numFailures / (numSuccesses + numFailures) * 100);
+        }
+       
+        // Draw a line chart of the percentages
+        const chartData = {
+          labels: Array.from({length: numTrials + 1}, (_, i) => i.toString()),
+          datasets: [
+            {
+              label: "Success",
+              data: successPercentages,
+              borderColor: "green",
+              fill: false
+            },
+            /*
+            {
+              label: "Failure",
+              data: failurePercentages,
+              borderColor: "red",
+              fill: false
+            }
+            */
+          ]
+        };
+       
+        const chartOptions = {
+        scales: {
+            yAxes: [{
+            ticks: {
+                beginAtZero: true,
+                max: 100,
+            }
+            }]
+        }
+        };
+       
+        const ctx = document.getElementById("chart").getContext("2d");
+        if (myChart) {
+          myChart.destroy();
+        }
+        myChart = new Chart(ctx, {
+          type: "line",
+          data: chartData,
+          options: chartOptions
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Experiment Trials</h1>
+    <p>Enter the number of trials you want to run:</p>
+    <section class="container">
+        <input type="number" id="numTrials">
+        <button onclick="runExperiment()">Run Experiment</button>
+    </section>
+    <canvas id="chart" width="800" height="400"></canvas>
+  </body>
+</html>
