@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Recipe Search</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		function searchRecipes() {
+			var ingredients = document.getElementById("ingredients").value;
+			var ranking = document.getElementById("ranking").checked ? 1 : 0;
+			var number = 10;
+			var apiKey = process.env(API_KEY);
+
+			$.getJSON(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=${number}&ranking=${ranking}&ignorePantry=true&apiKey=${apiKey}`, function(data) {
+				var resultsContainer = document.getElementById("results");
+				resultsContainer.innerHTML = "";
+
+				for (var i = 0; i < data.length; i++) {
+					var result = data[i];
+
+					var title = result.title;
+					var image = result.image;
+					var id = result.id;
+                    console.log(`listID: ${id}`);
+					var usedIngredients = result.usedIngredients;
+					var missedIngredients = result.missedIngredients;
+
+					var resultContainer = document.createElement("div");
+					resultContainer.classList.add("result");
+                    resultContainer.setAttribute("data-id", id); // add ID as data attribute
+
+					// add event listener to call getRecipeDetails on click
+					resultContainer.addEventListener("click", function() {
+						getRecipeDetails(this.getAttribute("data-id"));
+					});
+
+					var titleElement = document.createElement("h3");
+					titleElement.innerHTML = title;
+
+					var imageElement = document.createElement("img");
+					imageElement.src = image;
+
+					var idElement = document.createElement("p");
+					idElement.innerHTML = "ID: " + id;
+
+					var usedIngredientsElement = document.createElement("p");
+					usedIngredientsElement.innerHTML = "Used Ingredients: " + usedIngredients.map(ingredient => ingredient.name).join(", ");
+
+					var missedIngredientsElement = document.createElement("p");
+					missedIngredientsElement.innerHTML = "Missed Ingredients: " + missedIngredients.map(ingredient => ingredient.name).join(", ");
+
+					resultContainer.appendChild(titleElement);
+					resultContainer.appendChild(imageElement);
+					resultContainer.appendChild(idElement);
+					resultContainer.appendChild(usedIngredientsElement);
+					resultContainer.appendChild(missedIngredientsElement);
+
+					resultsContainer.appendChild(resultContainer);
+				}
+
+				// Add a message to the top of the results indicating the number of recipes found
+				var messageElement = document.createElement("p");
+				messageElement.classList.add("message");
+				messageElement.innerHTML = "We found " + data.length + " recipes based on your ingredients!";
+				resultsContainer.insertBefore(messageElement, resultsContainer.firstChild);
+			});
+		}
+
+        function getRecipeDetails(id) {
+            var apiKey = "93583cc1a3e342509465e32c317b3d26";
+			// var id = document.getElementById("recipeID").value;
+            console.log(`ID: ${id}`);
+
+            // Create new results
+			var resultsContainer = document.getElementById("results");
+				resultsContainer.innerHTML = "";
+
+            // Get the results from Spoonacular APi and write it to results
+            $.getJSON(`https://api.spoonacular.com/recipes/${id}/information?includeNutrition=true&apiKey=${apiKey}`, function(data) {
+
+					var title = data.title;
+					var image = data.image;
+					var ingredients = data.extendedIngredients;
+					var instructions = data.analyzedInstructions[0].steps;
+					var nutrition = data.nutrition;
+					console.log(nutrition);
+					
+					// Recipe title
+					var titleElement = document.createElement("h2");
+					titleElement.innerHTML = title;
+
+					// Recipe image
+					var imageElement = document.createElement("img");
+					imageElement.src = image;
+
+					// Recipe ingredients with amount and unit
+					var ingredientList = `<h3>Ingredients: </h3><ul>`;
+					for (var i=0; i < ingredients.length; i++) {
+						ingredientList += `<li>${ingredients[i].amount} ${ingredients[i].unit} ${ingredients[i].name}</li>`;
+					}
+					var ingredientsElement = document.createElement("p");
+					ingredientsElement.innerHTML = ingredientList;
+
+					// Recipe steps
+					var instructionList = `<h3>Steps: </h3><ul>`;
+					for (var i=0; i < instructions.length; i++) {
+						instructionList += `<li>${instructions[i].step}</li>`;
+					}
+					var instructionsElement = document.createElement("p");
+					instructionsElement.innerHTML = instructionList;
+
+					// Nutrition Info
+					var nutritionList = `<h3>Nutrition Information: </h3><ul>`;
+					// Calories
+					nutritionList += `<li>Calories: ${nutrition.nutrients[0].amount} ${nutrition.nutrients[0].unit}</li>`;
+					// Fat
+					nutritionList += `<li>Fat: ${nutrition.nutrients[1].amount} ${nutrition.nutrients[1].unit}</li>`;
+					nutritionList += `<li>Saturated Fat: ${nutrition.nutrients[2].amount} ${nutrition.nutrients[2].unit}</li>`;
+					// Carbohydrates
+					nutritionList += `<li>Carbohydrates: ${nutrition.nutrients[3].amount} ${nutrition.nutrients[3].unit}</li>`;
+					// Sugars
+					nutritionList += `<li>Sugars: ${nutrition.nutrients[5].amount} ${nutrition.nutrients[5].unit}</li>`;
+					// Sodium
+					nutritionList += `<li>Sodium: ${nutrition.nutrients[7].amount} ${nutrition.nutrients[7].unit}</li>`;
+					// Protein
+					nutritionList += `<li>Protein: ${nutrition.nutrients[8].amount} ${nutrition.nutrients[8].unit}</li>`;
+					nutritionList += `</ul>`;
+					var nutritionElement = document.createElement("p");
+					nutritionElement.innerHTML = nutritionList;
+
+					resultsContainer.appendChild(titleElement);
+					resultsContainer.appendChild(imageElement);
+					resultsContainer.appendChild(ingredientsElement);
+					resultsContainer.appendChild(instructionsElement);
+					resultsContainer.appendChild(nutritionElement);
+
+        	});
+		}
+
+	</script>
+	<style>
+	body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        height: 100vh;
+      }
+      .left-section {
+        width: 30%;
+        background-color: #ffe6ea;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+      .right-section {
+        width: 70%;
+        height: 100vh;
+        overflow-y: scroll;
+        background-color: #f0f0f0;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+		.result {
+			border: 1px solid #ccc;
+			padding: 10px;
+			margin-bottom: 10px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+		.result:hover {
+			background-color: #f2f2f2;
+		}
+
+		h3 {
+			margin: 0;
+			font-size: 20px;
+			color: #e4007c;
+		}
+
+		img {
+			max-width: 100%;
+		}
+		input[type="text"] {
+			padding: 10px;
+			font-size: 16px;
+			border-radius: 5px;
+			border: none;
+			background-color: #fff;
+			box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+			margin-bottom: 10px;
+			width: 100%;
+			box-sizing: border-box;
+		}
+		input[type="checkbox"] {
+			margin-left: 10px;
+		}
+		button {
+			background-color: #e4007c;
+			color: #fff;
+			padding: 10px;
+			font-size: 16px;
+			border-radius: 5px;
+			border: none;
+			cursor: pointer;
+			transition: background-color 0.2s ease-in-out;
+		}
+		button:hover {
+			background-color: #d3006d;
+		}
+		.message {
+			font-size: 18px;
+			color: #e4007c;
+			margin-top: 20px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="left-section">
+			<h2>Search for Recipes</h2>
+			<p>Enter the ingredients you have on hand and we'll find some recipes for you!</p>
+			<label for="ingredients">List ingredients separated by commas:</label>
+			<input type="text" id="ingredients" placeholder="Enter ingredients" />
+			<br /><br />
+			<label for="ranking">Emphasize included ingredients?</label>
+			<input type="checkbox" id="ranking" />
+			<br /><br />
+			<button onclick="searchRecipes()">Search Recipes</button>
+            <br /><br />
+			<br /><br />
+			<p>Enter a recipe ID and get the recipe details!</p>
+            <label for="recipe-id">Recipe ID:</label>
+            <input type="text" id="recipeID" placeholder="Enter recipe ID"/>
+            <br /><br />
+            <button onclick="getRecipeDetails(id)">Get Recipe Details</button>
+		</div>
+		<div class="right-section">
+			<div id="results"></div>
+		</div>
+		<!-- Script for handling hover over result containers -->
+		<script>
+			var resultsContainer = document.getElementById("results");
+			resultsContainer.addEventListener("mouseover", function(event) {
+				var element = event.target.closest(".result");
+				if (element) {
+					element.classList.add("highlighted");
+				}
+			});
+			resultsContainer.addEventListener("mouseout", function(event) {
+				var element = event.target.closest(".result");
+				if (element) {
+					element.classList.remove("highlighted");
+				}
+			});
+		</script>
+	</div>
+</body>
+</html>
